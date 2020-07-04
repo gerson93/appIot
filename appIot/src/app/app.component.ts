@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
+import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -14,14 +13,24 @@ export class AppComponent{
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    private nav: NavController
   ) {
     this.initializeApp();
   }
-  clickItem() {
+  /* clickItem() {
     console.log('hi from item Menu')
+    this.nav.navigateForward('/menu')
+  } */
+
+  goToConfigPage(){
+    this.nav.navigateForward('/menu')
   }
 
+  goToLoginPage(){
+    this.nav.navigateForward('/loggin')
+  }
+  
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();

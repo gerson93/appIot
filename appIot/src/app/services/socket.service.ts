@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Socket, SocketIoConfig, SocketIoModule} from "ngx-socket-io";
-import { Subject, Observable, config } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { dataChart, ip } from "../interface/message.interface";
+import { ConfigService } from "../services/config.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,24 +12,16 @@ export class SocketService {
   private dataChart: dataChart
   private update$ = new Subject<dataChart>()
 
-  constructor(private socket: Socket) {
+  constructor(private socket: Socket, private config: ConfigService) {
   }
 
-  connectTo(ipAddress: ip){
-    console.log('new connection to ' + ipAddress.ip)
-    const config: SocketIoConfig = {url: ipAddress.ip, options:{}}
-    SocketIoModule.forRoot(config)
-  }
-
-  init() {
+  init(ip:string, name: string) {
+    this.socket.disconnect()
+    this.socket = new Socket ({url: 'http://' + ip, options: {}})
     this.socket.connect()
     this.socket.on('connect', () => {
-      this.socket.emit('identification', { 'id': 'iot1' })
+      this.socket.emit('identification', { 'id': name })
     })
-    this.socket.on('connectAccept', (event) => {
-      console.log(event)
-    })
-    this.updateChart()
   }
 
   updateChart(){
@@ -41,7 +34,4 @@ export class SocketService {
   getUpdate$(): Observable<dataChart> {
     return this.update$.asObservable()
   }
-
-
-
 }

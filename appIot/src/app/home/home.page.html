@@ -11,22 +11,17 @@
     <ion-list>
       <ion-item>
         <ion-label>Connect</ion-label>
-        <ion-toggle slot="start" name="connect" (ionChange)='changeDBConnectStatus($event)'></ion-toggle>
+        <ion-toggle disabled={{connectDisabled}} slot="start" name="connect" (ionChange)='changeDBConnectStatus($event)'></ion-toggle>
       </ion-item>
 
       <ion-item>
         <ion-label>Real Time</ion-label>
-        <ion-toggle slot="start" name="realTime" color="secondary" (ionChange)='changeOnlineStatus($event)'>
+        <ion-toggle disabled={{realTimeDisabled}} slot="start" name="realTime" color="secondary" (ionChange)='changeOnlineStatus($event)'>
         </ion-toggle>
       </ion-item>
     </ion-list>
   </ion-toolbar>
-
-  
-
 </ion-header>
-
-
 
 <ion-content>
   <div id="container" class="ion-padding">

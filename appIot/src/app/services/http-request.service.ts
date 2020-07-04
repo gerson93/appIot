@@ -1,34 +1,44 @@
 import { Injectable } from '@angular/core';
 
 import { HttpClient } from "@angular/common/http";
-import { request, response, dataChart } from "../interface/message.interface";
+import { ConfigService } from "../services/config.service";
+import { dataChart, ip, validationAccess, dataAccess } from "../interface/message.interface";
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class httpMethods {
-  private goBack: response[] = []
   private data: dataChart
-  constructor(private http: HttpClient) { }
+  private validation: validationAccess
 
-  post(request: request): any {
-    this.http.post('http://192.168.1.83:8000', request,
-      { headers: { "Content-Type": "application/json" } })
-      .subscribe((rqst) => {
-        this.goBack.push(rqst)
-      })
-    return this.goBack
-  } /* Arreglar esta funcion */
+  constructor(private http: HttpClient,
+    private config: ConfigService) { }
 
-  getDataChart(ipAddress: string): dataChart {
-    this.http.get<dataChart>('http://192.168.1.83:8080/dbRequest',
-      { headers: { "Content-Type": "application/json" } })
+  getDataChart(ipAddress: string) {
+    return new Promise<dataChart>((resolve, rejected) => {
+      this.http.get<dataChart>('http://' + ipAddress + '/dbRequest',
+        { headers: { "Content-Type": "application/json" } })
       .subscribe(
         data => {
-          this.data = data
+          resolve(data)
         }
       )
-    return this.data
+
+    })
   }
+
+  getAccess(ipAddress: string, dataAccess: dataAccess) {
+    return new Promise<validationAccess>((resolve, rejected) => {
+      this.http.post<validationAccess>('http://' + ipAddress + '/access', dataAccess,
+        { headers: { "Content-Type": "application/json" } })
+        .subscribe(
+          validation => resolve(validation),
+          error => { console.log(error) }
+        )
+    }
+    )
+  }
+
 }
